@@ -1,41 +1,43 @@
-//Retrieve the JSON
-const rootContainer = document.querySelector("#root");
+const url = "https://api.tvmaze.com/shows/82/episodes";
+const root = document.querySelector("#root");
+const inputValue = document.querySelector(".search");
+const listOfEpisode = [];
 
-fetch("https://api.tvmaze.com/shows/82/episodes")
-  .then((res) => {
-    return res.json();
-  })
-  .then((data) => {
-    data.forEach((episode) => {
-      //create episode container
-      const episodeContainer = document.createElement("div");
-      const episodeNameContainer = document.createElement("div");
-      const episodeName = document.createElement("h3");
-      const episodeContentContainer = document.createElement("div");
-      const episodeImg = document.createElement("img");
-      const episodeDescription = document.createElement("div");
+inputValue.addEventListener("input", (e) => filterData(e.target.value));
+getData();
+//fetch episodes
+async function getData() {
+  const res = await fetch(url);
+  const data = await res.json();
 
-      //add class to each container
-      episodeContainer.className = "episode-container";
-      episodeNameContainer.className = "episode-name-container";
-      episodeName.className = "episode-name";
-      episodeContentContainer.className = "episode-content-container";
-      episodeImg.className = "episode-img";
-      episodeDescription.className = "episode-description";
+  data.map((episode) => {
+    const card = document.createElement("div");
+    card.className = "card";
 
-      console.log(episodeContentContainer);
-      //add content
-      episodeName.innerHTML = episode.name;
-      episodeImg.src = episode.image.medium;
-      episodeDescription.innerHTML = episode.summary;
+    listOfEpisode.push(card);
 
-      //append element
-      episodeNameContainer.appendChild(episodeName);
-      episodeContentContainer.append(episodeImg, episodeDescription);
-      episodeContainer.append(episodeName, episodeContentContainer);
-      rootContainer.append(episodeContainer);
-    });
-  })
-  .catch((err) => {
-    console.error(err);
+    card.innerHTML = ` <div class="title">
+                        <h3>${episode.name}</h3>
+                      </div>
+                      <div class="content">
+                        <img src="${episode.image.medium}" class="cover" alt="" /> //
+                        <p class="summary">${episode.summary}</p>
+                      </div>`;
+
+    root.appendChild(card);
   });
+}
+
+function filterData(searchEpisode) {
+  listOfEpisode.filter((filterEpisode) => {
+    if (
+      filterEpisode.innerHTML
+        .toLowerCase()
+        .includes(searchEpisode.toLowerCase())
+    ) {
+      filterEpisode.style.display = "block";
+    } else {
+      filterEpisode.style.display = "none";
+    }
+  });
+}

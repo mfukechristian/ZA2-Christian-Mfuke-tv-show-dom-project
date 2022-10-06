@@ -10,12 +10,13 @@ body {
 #root {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
+  gap: 20px;
   width: 80%;
+  height: 100%;
   margin: 0 auto;
 }
 
-.episode-container {
+.card {
   width: 300px;
   background-color: #fff;
   text-align: center;
